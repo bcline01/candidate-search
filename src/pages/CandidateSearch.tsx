@@ -4,8 +4,10 @@ import  Candidate from '../interfaces/Candidate.interface';
 
 const CandidateSearch = () => {
   // State to hold current candidate
- 
-  const [currentCandidate, setCurrentCandidate] = useState<Candidate>({
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [response, setResponse] = useState<Array<Candidate>>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [currentCandidate, setCurrentCandidate] = useState<Candidate | null>({
     name: '',
     login: '',
     location: '',
@@ -15,59 +17,85 @@ const CandidateSearch = () => {
     company: '',
 });
 
-// fetch data from API
+const handleButtonClick = () => {
+  setCurrentIndex((index) => index + 1);
+};
+
+const nextCandidate = response.length > currentIndex;
+
+
+// Fetch candidates from GitHub API 
 useEffect(() => {
-const fetchCandidates = async () => {
-  try {
-    const users = await searchGithub();
-    console.log(users);
-    if (users.length > 0) {
-      const username = users[0].login;
-      const userDetails = await searchGithubUser(username);
-      setCurrentCandidate({
-        avatar_url: userDetails.avatar_url,
-        name: userDetails.name,
-        location: userDetails.location,
-        email: userDetails.email,
-        company: userDetails.company,
-        html_url: userDetails.html_url,
-        login: userDetails.login,
-      });
-    }
-  } catch (err) {
-    console.log('Error fetching Candidates', err);
+  const fetchCandidates = async () => {
+    try {
+      const data = await searchGithub();
+      // Map data to Candidate interface
+      const fetchedCandidates: Candidate[] = data.map((user: Candidate) => ({
+        name: user.name || 'No name available',
+        login: user.login,
+        location: user.location || 'No location available',
+        avatar_url: user.avatar_url || 'No avatar available',
+        email: user.email || 'No email available',
+        html_url: user.html_url || 'No address available',
+        company: user.company || 'No company available',
+      }));
+      setResponse(fetchedCandidates);
+      if (fetchedCandidates.length > 0) {
+        // setCurrentCandidate(fetchedCandidates[0]);
+      }
+      setError(null); 
+  } catch (error) {
+    setError('Error fetching candidates');
   }
 };
+
 fetchCandidates();
 }, []);
 
-
-
-
-// save fetched data to local storage
-
-const addToStorage = () => {
-  let storage = localStorage.getItem('candidates');
-  if (storage) {
-    let candidates = JSON.parse(storage);
-    candidates.push(currentCandidate);
-    localStorage.setItem('candidates', JSON.stringify(candidates));
-  } else {
-    localStorage.setItem('candidates', JSON.stringify([currentCandidate]));
+useEffect(() => {
+  const fetchUserDetails = async () => {
+    if (nextCandidate) {
+      try {
+        const login = response[currentIndex].login;
+        if (login) {
+        const user = await searchGithubUser(login);
+        if (user) {
+          setCurrentCandidate({
+            name: user.name || 'No name available',
+            login: user.login,
+            location: user.location || 'No location available',
+            avatar_url: user.avatar_url || 'No avatar available',
+            email: user.email || 'No email available',
+            html_url: user.html_url || 'No address available',
+            company: user.company || 'No company available',
+          });
+        } else {
+          setCurrentCandidate(null);
+        }
+      } else {
+        setCurrentCandidate(null); // Handle case where login is null
+      }
+    } catch (error) {
+      setError('Error fetching user details');
+    }
   }
 };
 
-// click the add button and save candidate to potential candidates
+fetchUserDetails();
+}, [currentIndex, nextCandidate, response]);
 
-// click next button to move to the next profile. 
-
-
-
-
-
-
-
-
+// Save candidate to local storage
+const saveCandidate = () => {
+  let parsedCandidates: Candidate[] = [];
+  const storedCandidates = localStorage.getItem('candidates');
+  if (typeof storedCandidates === 'string') {
+    parsedCandidates = JSON.parse(storedCandidates);
+  }
+  if (currentCandidate) {
+    parsedCandidates.push(currentCandidate);
+    localStorage.setItem('candidates', JSON.stringify(parsedCandidates));
+  }
+};
 
 
 return (
@@ -75,7 +103,8 @@ return (
     <h1> Candidate Search</h1>
 
 
-    
+      {/* Error Message */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {/* Display Current Candidate */}
       {currentCandidate && (
@@ -90,7 +119,10 @@ return (
       )}
 
       {/* Save Button */}
-      <button className='btn' id='btn2' onClick={addToStorage}></button>
+      <button onClick={saveCandidate}>Save Candidate</button>
+      <button onClick={handleButtonClick}>Next</button>
+
+      
   </section>
 );
 }
