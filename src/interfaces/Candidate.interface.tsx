@@ -1,5 +1,5 @@
 // TODO: Create an interface for the Candidate objects returned by the API
-interface Candidate {
+export default interface Candidate {
     readonly name: string | null;
     readonly login: string | null; // GitHub username
     readonly location: string | null;
@@ -9,4 +9,3 @@ interface Candidate {
     readonly company: string | null;
 }
 
-export default Candidate
