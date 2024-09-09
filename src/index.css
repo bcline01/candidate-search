@@ -155,7 +155,7 @@ tbody tr:nth-child(odd) {
 }
 
 .candidate-table {
-  width: 80vw;
+  width: 90vw;
   table-layout: fixed;
 }
 

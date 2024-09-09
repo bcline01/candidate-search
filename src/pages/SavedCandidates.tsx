@@ -56,7 +56,7 @@ const SavedCandidates = () => {
                   <img 
                     src={candidate.avatar_url || 'https://avatars.githubusercontent.com/u/302001?s=80&v=4'} 
                     alt="Avatar" 
-                    style={{ width: '60px', height: '60px', borderRadius: '50%' , backgroundColor: 'white'}} 
+                    style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: 'white' }} 
                   />
                 </td>
                 <td>{candidate.email || 'N/A'}</td>
@@ -67,11 +67,9 @@ const SavedCandidates = () => {
                 </td>
                 <td>{candidate.company || 'N/A'}</td>
                 <td>
-                  {candidate.login && (
-                    <button onClick={() => removeUser(candidate.html_url)}>
-                      <HiX />
-                    </button>
-                  )}
+                  <button onClick={() => removeUser(candidate.html_url || '')}>
+                    <HiX />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -82,6 +80,7 @@ const SavedCandidates = () => {
       )}
     </>
   )};
+  
   
 export default SavedCandidates;
 
