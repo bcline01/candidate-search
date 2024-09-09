@@ -1,6 +1,9 @@
 import { useState, useEffect} from 'react';
 import { searchGithub, searchGithubUser} from '../api/API';
 import  Candidate from '../interfaces/Candidate.interface';
+import { IoMdRemoveCircle } from 'react-icons/io';
+import { IoAddCircleSharp } from 'react-icons/io5';
+
 
 const CandidateSearch = () => {
   // State to hold current candidate
@@ -31,7 +34,7 @@ useEffect(() => {
       const data = await searchGithub();
       // Map data to Candidate interface
       const fetchedCandidates: Candidate[] = data.map((user: Candidate) => ({
-        name: user.name || 'No name available',
+        name: user.name || null,
         login: user.login,
         location: user.location || 'No location available',
         avatar_url: user.avatar_url || 'No avatar available',
@@ -40,9 +43,6 @@ useEffect(() => {
         company: user.company || 'No company available',
       }));
       setResponse(fetchedCandidates);
-      if (fetchedCandidates.length > 0) {
-        // setCurrentCandidate(fetchedCandidates[0]);
-      }
       setError(null); 
   } catch (error) {
     setError('Error fetching candidates');
@@ -95,12 +95,14 @@ const saveCandidate = () => {
     parsedCandidates.push(currentCandidate);
     localStorage.setItem('candidates', JSON.stringify(parsedCandidates));
   }
+  handleButtonClick();
 };
 
 
 return (
-  <section>
+  <div className='main'>
     <h1> Candidate Search</h1>
+    <div className="candidate">
 
 
       {/* Error Message */}
@@ -109,21 +111,27 @@ return (
       {/* Display Current Candidate */}
       {currentCandidate && (
         <div>
-          <h2>{currentCandidate.name} {currentCandidate.login}</h2>
-          <img src={currentCandidate.avatar_url as string} alt="Avatar" />
+        <h2>{currentCandidate.name || currentCandidate.login}</h2>
+        <img src={currentCandidate.avatar_url || "https://avatars.githubusercontent.com/u/302001?s=80&v=4"} alt="Avatar" className='candidate-photo'/>
+        <div className='candidate-details'>
           <p>Location: {currentCandidate.location}</p>
           <p>Email: {currentCandidate.email}</p>
           <p>Company: {currentCandidate.company}</p>
           <p>GitHub URL: <a href={currentCandidate.html_url as string} target="_blank" rel="noopener noreferrer">{currentCandidate.html_url}</a></p>
         </div>
+        </div>
       )}
 
       {/* Save Button */}
-      <button onClick={saveCandidate}>Save Candidate</button>
-      <button onClick={handleButtonClick}>Next</button>
+      <div className='candidate-buttons'>
+      <div onClick={handleButtonClick}>
+      <IoMdRemoveCircle className="button remove-button" /></div>
+      <div onClick={saveCandidate}>
+      <IoAddCircleSharp className="button add-button" /></div>
 
-      
-  </section>
+      </div>
+      </div>
+  </div>
 );
 }
 

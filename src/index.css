@@ -53,6 +53,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  justify-content: space-between;
 }
 button:hover {
   border-color: #646cff;
@@ -60,6 +61,36 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.remove-button {
+  color: rgb(244, 107, 107);
+}
+
+.remove-button:hover {
+  color: red;
+}
+
+.add-button {
+  color: rgb(113, 193, 113);
+}
+
+.add-button:hover {
+  color: green;
+}
+
+.candidate-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 1rem 0px;
+  width: 100%;
+}
+
+.button {
+  font-size: 4rem;
+  cursor: pointer;
+  margin: 0px 1rem;
 }
 
 @media (prefers-color-scheme: light) {
@@ -71,9 +102,14 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: rgb(238, 73, 73);
+  }
+  button:hover {
+    background-color: darkred;
   }
 }
+
+
 
 main {
   color: #fff;
@@ -84,8 +120,12 @@ main {
   align-items: center;
 }
 
+.table-url {
+  max-width: 80vw;
+}
+
 tr {
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #000;
   color: white;
 }
@@ -114,7 +154,60 @@ tbody tr:nth-child(odd) {
   font-weight: 700;
 }
 
-.table {
+.candidate-table {
   width: 80vw;
   table-layout: fixed;
+}
+
+.candidate-table th,
+.candidate-table td {
+  border: 1px solid #2831db;
+  padding: 8px;
+  text-align: left;
+  word-wrap: break-word; /* Older property, for legacy browsers */
+  overflow-wrap: break-word;
+}
+
+.candidate-table th {
+  background-color: #2831db;
+  font-weight: bold;
+}
+
+.candidate-table-img {
+  margin: 2rem auto;
+  background-size: cover;
+  background-position: center;
+  width: 100px;
+  height: 100px;
+}
+
+.candidate {
+  background-color: #000;
+  margin: 0px auto;
+  border-radius: 16px;
+  width: 300px;
+  word-wrap: break-word;
+}
+
+.candidate-details{
+  padding: 0px 1rem;
+}
+
+.candidate-photo {
+  border-radius: 16px 16px 0px 0px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #000;
+  height: 300px;
+  width: 300px;
+
+}
+
+.candidate-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 1rem 0px;
+  width: 100%;
 }
